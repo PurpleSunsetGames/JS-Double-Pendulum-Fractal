@@ -199,7 +199,7 @@ function createGl(){
         gl.uniform2f(offsetAttribLocation, Offsetx, Offsety);
         gl.uniform1f(scaleAttribLocation, Scale);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
-        requestAnimationFrame(animTime);
+        setTimeout(requestAnimationFrame(animTime), 20);
     }
 }
 createGl();
