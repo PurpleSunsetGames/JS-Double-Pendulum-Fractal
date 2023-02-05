@@ -1,7 +1,15 @@
 'use strict';
 let canvas = document.getElementById("canvas");
+let playButton = document.getElementById("Play");
 let w = Math.min(window.innerWidth, window.innerHeight);;
 let animating = true;
+
+let T = 1;
+let Offsetx = 1, 
+    Offsety = 1;
+let Scale = 1;
+let gl;
+
 canvas.width = w - 100;
 canvas.height = w - 100;
 
@@ -15,14 +23,38 @@ window.addEventListener("resize",
         createGl();
     }
 );
-canvas.addEventListener("click",
+playButton.addEventListener("click",
     function(){animating=!animating;}
 );
-canvas.addEventListener("dblclick",
-    function(){T=0;}
+
+let drag = false;
+let mouseDown = false;
+let xMouse, yMouse;
+let draggedXMouse=0,
+    draggedYMouse=0;
+canvas.addEventListener("mousemove", (e)=>{
+    xMouse = e.clientX;
+    yMouse = e.clientY;
+    if(mouseDown){
+        Offsetx += (draggedXMouse - xMouse) * (Scale / 100);
+        Offsety -= (draggedYMouse - yMouse) * (Scale / 100);
+    }
+    draggedXMouse = xMouse;
+    draggedYMouse = yMouse;
+})
+
+canvas.addEventListener('mousedown', 
+() => {drag = false; mouseDown = true}
 );
+
+canvas.addEventListener('mouseup', 
+() => {drag = false; mouseDown = false}
+);
+
+canvas.addEventListener("wheel", (e) => Scale = Math.max(Scale * (1 + (e.deltaY / 100)), 0.001))
+
 function createGl(){
-    let gl = canvas.getContext("webgl2");
+    gl = canvas.getContext("webgl2");
 
     if (!gl) {
         alert("Your browser does not support WebGL");
@@ -33,20 +65,25 @@ function createGl(){
 
     const shaders = {
         vs:`#version 300 es
+        precision highp float;
+
         in vec2 vertPosition;
         out vec3 fragColor;
         uniform float Time;
+        uniform vec2 Offset;
+        uniform float Scale;
         void main() {
             fragColor = vec3(vertPosition, 0.0);
             gl_Position = vec4(vertPosition, 0, 1);
         }`,
 
         fs:`#version 300 es
-
         precision highp float;
 
         in vec3 fragColor;
         uniform float Time;
+        uniform vec2 Offset;
+        uniform float Scale;
 
         out vec4 outColor;
 
@@ -74,7 +111,7 @@ function createGl(){
         }
         void main()
         {
-            vec2 fragCoord = vec2(fragColor.xy);
+            vec2 fragCoord = vec2(Scale*fragColor.xy) + Offset;
             float PI = 3.1415;
             vec4 nz = vec4(PI * (fragCoord.x - 1.), PI * (fragCoord.y - 1.), 0.0, 0.0);
             for (float i=0.; i<Time; i++){
@@ -125,25 +162,31 @@ function createGl(){
     };
     // Creating buffers
     let vertexBufferObjectPosition = gl.createBuffer();
-    let vertexBufferObjectColor = gl.createBuffer();
-    let uniformTimeBuffer = gl.createBuffer();
 
     // Binding created buffer for vertexAttributes.position to gl object
     gl.bindBuffer(gl.ARRAY_BUFFER, vertexBufferObjectPosition);
     gl.bufferData(gl.ARRAY_BUFFER, vertexAttributes.position.data, gl.STATIC_DRAW);
     // Getting the location in memory for the variable stored in line 2 of the vertex shader
     let positionAttribLocation = gl.getAttribLocation(program, 'vertPosition');
-
     gl.vertexAttribPointer(positionAttribLocation, vertexAttributes.position.numberOfComponents, gl.FLOAT, gl.FALSE, 0, 0);
     gl.enableVertexAttribArray(positionAttribLocation);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, uniformTimeBuffer);
 
+    let uniformTimeBuffer = gl.createBuffer();
+    let uniformOffsetBuffer = gl.createBuffer();
+    let uniformScaleBuffer = gl.createBuffer();
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, uniformTimeBuffer);
     let timeAttribLocation = gl.getUniformLocation(program, 'Time');
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, uniformOffsetBuffer);
+    let offsetAttribLocation = gl.getUniformLocation(program, 'Offset');
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, uniformScaleBuffer);
+    let scaleAttribLocation = gl.getUniformLocation(program, 'Scale');
 
     gl.useProgram(program);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
-    let T = 1;
     animTime();
     function animTime() {
         if(animating){
@@ -152,15 +195,11 @@ function createGl(){
             }
             T++;
             gl.uniform1f(timeAttribLocation, T);
-            gl.drawArrays(gl.TRIANGLES, 0, 6);
         }
+        gl.uniform2f(offsetAttribLocation, Offsetx, Offsety);
+        gl.uniform1f(scaleAttribLocation, Scale);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
         requestAnimationFrame(animTime);
     }
 }
 createGl();
-
-const message = gl.getShaderInfoLog(fragmentShader);
-
-if (message.length > 0) {
-  console.log(message);
-}
