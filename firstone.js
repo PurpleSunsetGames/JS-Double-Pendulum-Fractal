@@ -1,8 +1,10 @@
 'use strict';
 let canvas = document.getElementById("canvas");
 let playButton = document.getElementById("Play");
+let resetButton = document.getElementById("ResetTime");
 let w = Math.min(window.innerWidth, window.innerHeight);;
-let animating = true;
+let animating = false;
+let timeDisplay = document.getElementById("timeDisplay");
 
 let T = 1;
 let Offsetx = 1, 
@@ -13,18 +15,11 @@ let gl;
 canvas.width = w - 100;
 canvas.height = w - 100;
 
-window.addEventListener("resize", 
-    function fw(){
-        w = Math.min(window.innerWidth, window.innerHeight);
-
-        canvas.width = w - 100;
-        canvas.height = w - 100;
-        canvas = document.getElementById("canvas");
-        createGl();
-    }
-);
 playButton.addEventListener("click",
     function(){animating=!animating;}
+);
+resetButton.addEventListener("click",
+    function(){T=0;animTime();}
 );
 
 let drag = false;
@@ -171,18 +166,10 @@ function createGl(){
     gl.vertexAttribPointer(positionAttribLocation, vertexAttributes.position.numberOfComponents, gl.FLOAT, gl.FALSE, 0, 0);
     gl.enableVertexAttribArray(positionAttribLocation);
 
-
-    let uniformTimeBuffer = gl.createBuffer();
-    let uniformOffsetBuffer = gl.createBuffer();
-    let uniformScaleBuffer = gl.createBuffer();
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, uniformTimeBuffer);
     let timeAttribLocation = gl.getUniformLocation(program, 'Time');
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, uniformOffsetBuffer);
     let offsetAttribLocation = gl.getUniformLocation(program, 'Offset');
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, uniformScaleBuffer);
     let scaleAttribLocation = gl.getUniformLocation(program, 'Scale');
 
     gl.useProgram(program);
@@ -196,6 +183,7 @@ function createGl(){
             T++;
             gl.uniform1f(timeAttribLocation, T);
         }
+        timeDisplay.innerText = "Time: " + T;
         gl.uniform2f(offsetAttribLocation, Offsetx, Offsety);
         gl.uniform1f(scaleAttribLocation, Scale);
         gl.drawArrays(gl.TRIANGLES, 0, 6);

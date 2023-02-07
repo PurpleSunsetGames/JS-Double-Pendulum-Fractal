@@ -6,12 +6,17 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body bgcolor="#111111">
-    <div>
-      <p>This is a fractal.</p>
-    </div>
-    <div>
+    <div class="column1">
+      <p><em>This is a fractal</em></p>
       <canvas id="canvas" width="200" height="100"></canvas>
-      <button id="Play">Play</button>
+    </div>
+    <div class="column2">
+      <p height="50%">Settings</p>
+      <div>
+        <button id="Play" class="button1">Play</button>
+        <button id="ResetTime" class="button1">Reset</button>
+        <p id="timeDisplay">Time: 0</p>
+      </div>
     </div>
     <script src="firstone.js"></script>
   </body>

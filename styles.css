@@ -6,8 +6,23 @@ p{
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size:large;
 }
-button{
-    background-color:rgb(189, 207, 222);
-    color: "black";
-    font-size: 180%;
+.button1{
+    background-color:rgb(10, 00, 20);
+    color: rgb(240, 248, 255);
+    font-size: 130%;
+    border-radius: 10%;
+    border-color: aliceblue;
 }
+.column1{
+    float: left;
+    width: 50%;
+}
+.column2{
+    float: right;
+    width: 50%;
+}
+canvas{
+    width: 90%;
+    height:90%;
+}
+
