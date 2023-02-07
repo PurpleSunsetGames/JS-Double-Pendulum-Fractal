@@ -18,9 +18,6 @@ canvas.height = w - 100;
 playButton.addEventListener("click",
     function(){animating=!animating;}
 );
-resetButton.addEventListener("click",
-    function(){T=0;animTime();}
-);
 
 let drag = false;
 let mouseDown = false;
@@ -181,13 +178,15 @@ function createGl(){
                 T = 0;
             }
             T++;
-            gl.uniform1f(timeAttribLocation, T);
         }
-        timeDisplay.innerText = "Time: " + T;
+        gl.uniform1f(timeAttribLocation, T);
         gl.uniform2f(offsetAttribLocation, Offsetx, Offsety);
         gl.uniform1f(scaleAttribLocation, Scale);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         setTimeout(requestAnimationFrame(animTime), 20);
     }
 }
+resetButton.addEventListener("click",
+    function(){T=0;}
+);
 createGl();
