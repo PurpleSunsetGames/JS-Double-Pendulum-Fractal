@@ -5,8 +5,10 @@ let resetButton = document.getElementById("ResetTime");
 let w = Math.min(window.innerWidth, window.innerHeight);;
 let animating = false;
 let timeDisplay = document.getElementById("timeDisplay");
+let timeSlider = document.getElementById("timeSlider");
 
-let T = 1;
+
+let T = 0;
 let Offsetx = 1, 
     Offsety = 1;
 let Scale = 1;
@@ -14,6 +16,8 @@ let gl;
 
 canvas.width = w - 100;
 canvas.height = w - 100;
+
+timeSlider.oninput = function() {T=this.value; timeDisplay.innerHTML= "Time: " + this.value;};
 
 playButton.addEventListener("click",
     function(){animating=!animating;}
@@ -179,6 +183,8 @@ function createGl(){
             }
             T++;
         }
+        timeSlider.value=T;
+        timeDisplay.innerHTML = "Time: " + T;
         gl.uniform1f(timeAttribLocation, T);
         gl.uniform2f(offsetAttribLocation, Offsetx, Offsety);
         gl.uniform1f(scaleAttribLocation, Scale);

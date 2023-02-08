@@ -25,4 +25,20 @@ canvas{
     width: 90%;
     height:90%;
 }
-
+.slider-square{
+    color: aliceblue;
+    appearance: none;
+    width:100%;
+    opacity:.7;
+}
+.slider-square:hover{
+    opacity: .8;
+}
+.slider-square::-webkit-slider-thumb{
+    appearance: none;
+    height: 15px;
+    width: 15px;
+    color: black;
+    background: #878790;
+    cursor: pointer;
+}
