@@ -7,18 +7,29 @@
   </head>
   <body bgcolor="#111111">
     <div class="column1">
-      <p><em>This is a fractal</em></p>
+      <h1 class="header1"><em>Double Pendulum Fractal</em></h1>
+      <p class="pdescription"><em>Representation of the Evolution of All Possible Double Pendulums</em></p>
       <canvas id="canvas" width="200" height="100"></canvas>
     </div>
     <div class="column2">
-      <p height="50%">Settings</p>
+      <p class="pmini">Settings</p>
       <div>
-        <button id="Play" class="button1">Play</button>
-        <button id="ResetTime" class="button1">Reset</button>
-        <p>
+        <div class="slider-container">
+          <button id="ResetTime" class="button1">Reset</button>
+          <button id="Play" class="button1">Play</button>
           <input type="range" min="0" max="300" value="0" class="slider-square" id="timeSlider">
-        </p>
-        <p id="timeDisplay">Time: 0</p>
+          <div class="slider-container-sub">
+            <p id="timeDisplay" class="pdescription2">Time: 0</p>
+          </div>
+        </div>
+        <div class="slider-container">
+          <input type="range" min="0" max="1" step=".001" value="0.002" class="slider-square" id="frictionSlider">
+          <p id="frictionDisplay" class="pdescription2">Friction: 0</p>
+        </div>
+        <div class="slider-container">
+          <input type="range" min="0" max="10" step=".1" value="1" class="slider-square" id="gravitySlider">
+          <p id="gravityDisplay" class="pdescription2">Gravity: 1</p>
+        </div>
       </div>
     </div>
     <script src="firstone.js"></script>

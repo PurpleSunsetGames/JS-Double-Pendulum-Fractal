@@ -7,17 +7,34 @@ let animating = false;
 let timeDisplay = document.getElementById("timeDisplay");
 let timeSlider = document.getElementById("timeSlider");
 
+let frictionDisplay = document.getElementById("frictionDisplay");
+let frictionSlider = document.getElementById("frictionSlider");
+
+let gravityDisplay = document.getElementById("gravityDisplay");
+let gravitySlider = document.getElementById("gravitySlider");
+
 
 let T = 0;
 let Offsetx = 1, 
     Offsety = 1;
 let Scale = 1;
+let YAxisType = 1;
+let XAxisType = 1;
+let Lengs = {x: 1, y: 1};
+let Masses = {x: 1, y: 1};
+let g = 1;
+let Friction = frictionSlider.value;
+
+frictionDisplay.innerHTML= "Friction: " + Friction;
+
 let gl;
 
 canvas.width = w - 100;
 canvas.height = w - 100;
 
 timeSlider.oninput = function() {T=this.value; timeDisplay.innerHTML= "Time: " + this.value;};
+frictionSlider.oninput = function() {Friction=this.value; frictionDisplay.innerHTML= "Friction: " + this.value;};
+gravitySlider.oninput = function() {g=this.value; gravityDisplay.innerHTML = "Gravity: " + this.value;};
 
 playButton.addEventListener("click",
     function(){animating=!animating;}
@@ -65,9 +82,6 @@ function createGl(){
 
         in vec2 vertPosition;
         out vec3 fragColor;
-        uniform float Time;
-        uniform vec2 Offset;
-        uniform float Scale;
         void main() {
             fragColor = vec3(vertPosition, 0.0);
             gl_Position = vec4(vertPosition, 0, 1);
@@ -80,14 +94,16 @@ function createGl(){
         uniform float Time;
         uniform vec2 Offset;
         uniform float Scale;
+        uniform float XAxisType;
+        uniform float YAxisType;
+        uniform vec2 Lengs;
+        uniform vec2 Masses;
+        uniform float g;
+        uniform float Friction;
 
         out vec4 outColor;
 
-        vec2 Lengs = vec2(1., 1.);
-        vec2 Masses = vec2(1., 1.);
         float Timestep = .05;
-        float Friction = .998;
-        float g = 1.0;
         
         vec4 Iterat(vec4 zi, vec2 lengs, vec2 masses) {
             float theta1 = zi.x;
@@ -102,16 +118,19 @@ function createGl(){
             float g1 = (1.*f.x - (a.x * f.y)) / (1. - (a.x * a.y));
             float g2 = (-(a.y * f.x) + f.y) / (1. - (a.x * a.y));
         
-            vec4 endz = vec4(zi.x + Timestep * zi.z, zi.y + Timestep * zi.w, Friction * (zi.z + Timestep*g1), Friction * (zi.w + Timestep*g2));
+            vec4 endz = vec4(zi.x + Timestep * zi.z, zi.y + Timestep * zi.w, (1. - Friction) * (zi.z + Timestep*g1), (1. - Friction) * (zi.w + Timestep*g2));
             return endz;
         }
-        void main()
-        {
+        void main(){
             vec2 fragCoord = vec2(Scale*fragColor.xy) + Offset;
+            float leng1 = Lengs.x;
+            float leng2 = Lengs.y;
+            float mass1 = Masses.x;
+            float mass2 = Masses.y;
             float PI = 3.1415;
             vec4 nz = vec4(PI * (fragCoord.x - 1.), PI * (fragCoord.y - 1.), 0.0, 0.0);
             for (float i=0.; i<Time; i++){
-                nz = Iterat(nz, vec2(1.,1.), vec2(1.,1.));
+                nz = Iterat(nz, Lengs, Masses);
             }
             outColor = vec4(abs(sin(nz.x/2.)), abs(sin(nz.y/2.)), abs(cos(nz.z/2.)), 1.0);
         }`
@@ -167,11 +186,16 @@ function createGl(){
     gl.vertexAttribPointer(positionAttribLocation, vertexAttributes.position.numberOfComponents, gl.FLOAT, gl.FALSE, 0, 0);
     gl.enableVertexAttribArray(positionAttribLocation);
 
-    let timeAttribLocation = gl.getUniformLocation(program, 'Time');
-
-    let offsetAttribLocation = gl.getUniformLocation(program, 'Offset');
-
-    let scaleAttribLocation = gl.getUniformLocation(program, 'Scale');
+    // Uniforms
+    let timeAttribLocation    = gl.getUniformLocation(program, 'Time');
+    let offsetAttribLocation  = gl.getUniformLocation(program, 'Offset');
+    let scaleAttribLocation   = gl.getUniformLocation(program, 'Scale');
+    let xAxisTypeLocation     = gl.getUniformLocation(program, "XAxisType");
+    let yAxisTypeLocation     = gl.getUniformLocation(program, "YAxisType");
+    let lengthsAttribLocation = gl.getUniformLocation(program, 'Lengs');
+    let massesAttribLocation  = gl.getUniformLocation(program, 'Masses');
+    let gravityAttribLocation = gl.getUniformLocation(program, 'g');
+    let frictionLocation      = gl.getUniformLocation(program, "Friction"); 
 
     gl.useProgram(program);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -188,6 +212,12 @@ function createGl(){
         gl.uniform1f(timeAttribLocation, T);
         gl.uniform2f(offsetAttribLocation, Offsetx, Offsety);
         gl.uniform1f(scaleAttribLocation, Scale);
+        gl.uniform1f(xAxisTypeLocation, XAxisType);
+        gl.uniform1f(yAxisTypeLocation, YAxisType);
+        gl.uniform2f(lengthsAttribLocation, Lengs.x, Lengs.y);
+        gl.uniform2f(massesAttribLocation, Masses.x, Masses.y);
+        gl.uniform1f(gravityAttribLocation, g);
+        gl.uniform1f(frictionLocation, Friction);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         setTimeout(requestAnimationFrame(animTime), 20);
     }
