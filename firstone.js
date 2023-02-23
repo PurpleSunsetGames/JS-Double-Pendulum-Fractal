@@ -43,7 +43,7 @@ let yAxisToggle = document.getElementById("yAxisToggle");
 
 let fragShad = "";
 async function getFragShad() {
-    fragShad = await fetch("/fragmentShader.glsl").then(result=>result.text());
+    fragShad = await fetch("fragmentShader.glsl").then(result=>result.text());
     console.log(fragShad);
     createGl();
 }
@@ -285,7 +285,7 @@ function createGl(){
     const message = gl.getShaderInfoLog(fragmentShader);
 
     if (message.length > 0) {
-    console.log(message);
+        console.log(message);
     }
     animTime();
     function animTime() {
