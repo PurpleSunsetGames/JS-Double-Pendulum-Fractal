@@ -17,21 +17,61 @@
         <div class="slider-container">
           <button id="ResetTime" class="button1">Reset</button>
           <button id="Play" class="button1">Play</button>
-          <input type="range" min="0" max="300" value="0" class="slider-square" id="timeSlider">
+          <input type="range" min="0" max="400" value="0" class="slider-square" id="timeSlider">
           <div class="slider-container-sub">
             <p id="timeDisplay" class="pdescription2">Time: 0</p>
           </div>
         </div>
         <div class="slider-container">
-          <input type="range" min="0" max="1" step=".001" value="0.002" class="slider-square" id="frictionSlider">
+          <input type="range" min="0" max="1" step=".01" value="0.01" class="slider-square" id="frictionSlider">
           <p id="frictionDisplay" class="pdescription2">Friction: 0</p>
         </div>
         <div class="slider-container">
-          <input type="range" min="0" max="10" step=".1" value="1" class="slider-square" id="gravitySlider">
+          <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="gravitySlider">
           <p id="gravityDisplay" class="pdescription2">Gravity: 1</p>
         </div>
-      </div>
+        easter egg :)
+        <div class="slider-container">
+          <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p1StartAngleSlider">
+          <p id="p1StartAngleDisplay" class="pdescription2">Pendulum 1 start angle: 1</p>
+        </div>
+        <div class="slider-container">
+          <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="p1LengthSlider">
+          <p id="p1LengthDisplay" class="pdescription2">Pendulum 1 length: 1</p>
+        </div>
+        <div class="slider-container">
+          <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="p1MassSlider">
+          <p id="p1MassDisplay" class="pdescription2">Pendulum 1 mass: 1</p>
+        </div>
+        <div class="slider-container">
+          <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p1StartVelSlider">
+          <p id="p1StartVelDisplay" class="pdescription2">Pendulum 1 start vel.: 1</p>
+        </div>
+        
+        <div class="slider-container">
+          <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p2StartAngleSlider">
+          <p id="p2StartAngleDisplay" class="pdescription2">Pendulum 2 start angle: 1</p>
+        </div>
+        <div class="slider-container">
+          <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="p2LengthSlider">
+          <p id="p2LengthDisplay" class="pdescription2">Pendulum 2 length: 1</p>
+        </div>
+        <div class="slider-container">
+          <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="p2MassSlider">
+          <p id="p2MassDisplay" class="pdescription2">Pendulum 2 mass: 1</p>
+        </div>
+        <div class="slider-container">
+          <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p2StartVelSlider">
+          <p id="p2StartVelDisplay" class="pdescription2">Pendulum 2 start vel.: 1</p>
+        </div>
+        <div class="slider-container">
+          <button id="xAxisToggle" class="button2">X Axis Switch</button>
+          <button id="yAxisToggle" class="button2">Y Axis Switch</button>
+        </div>
+        </div>
     </div>
+    <script src="webgl-debug.js"></script>
+    <script src="fragmentShader.glsl" id="fragShad"></script>
     <script src="firstone.js"></script>
   </body>
 </html>

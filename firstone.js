@@ -1,4 +1,5 @@
 'use strict';
+
 let canvas = document.getElementById("canvas");
 let playButton = document.getElementById("Play");
 let resetButton = document.getElementById("ResetTime");
@@ -13,28 +14,149 @@ let frictionSlider = document.getElementById("frictionSlider");
 let gravityDisplay = document.getElementById("gravityDisplay");
 let gravitySlider = document.getElementById("gravitySlider");
 
+let p1StartAngleDisplay = document.getElementById("p1StartAngleDisplay");
+let p1StartAngleSlider = document.getElementById("p1StartAngleSlider");
 
-let T = 0;
+let p1LengthDisplay = document.getElementById("p1LengthDisplay");
+let p1LengthSlider = document.getElementById("p1LengthSlider");
+
+let p1MassDisplay = document.getElementById("p1MassDisplay");
+let p1MassSlider = document.getElementById("p1MassSlider");
+
+let p1StartVelDisplay = document.getElementById("p1StartVelDisplay");
+let p1StartVelSlider = document.getElementById("p1StartVelSlider");
+
+let p2StartAngleDisplay = document.getElementById("p2StartAngleDisplay");
+let p2StartAngleSlider = document.getElementById("p2StartAngleSlider");
+
+let p2LengthDisplay = document.getElementById("p2LengthDisplay");
+let p2LengthSlider = document.getElementById("p2LengthSlider");
+
+let p2MassDisplay = document.getElementById("p2MassDisplay");
+let p2MassSlider = document.getElementById("p2MassSlider");
+
+let p2StartVelDisplay = document.getElementById("p2StartVelDisplay");
+let p2StartVelSlider = document.getElementById("p2StartVelSlider");
+
+let xAxisToggle = document.getElementById("xAxisToggle");
+let yAxisToggle = document.getElementById("yAxisToggle");
+
+let fragShad = "";
+async function getFragShad() {
+    fragShad = await fetch("/fragmentShader.glsl").then(result=>result.text());
+    console.log(fragShad);
+    createGl();
+}
+getFragShad();
+let T = {x: 0};
+
 let Offsetx = 1, 
     Offsety = 1;
 let Scale = 1;
-let YAxisType = 1;
-let XAxisType = 1;
-let Lengs = {x: 1, y: 1};
-let Masses = {x: 1, y: 1};
-let g = 1;
-let Friction = frictionSlider.value;
+let YAxisType = 5,
+    XAxisType = 1;
 
-frictionDisplay.innerHTML= "Friction: " + Friction;
+let g = {x: 1};
+let Friction = {x: frictionSlider.value};
+
+let p1StartAngle = {x: p1StartAngleSlider.value},
+    p1StartVel = {x: p1StartVelSlider.value};
+
+let p2StartAngle = {x: p2StartAngleSlider.value},
+    p2StartVel = {x: p2StartVelSlider.value};
+
+let Lengs = {x: 2, y: 1};
+let Masses = {x: 1, y: 1};
+
+frictionDisplay.innerHTML= "Friction: " + Friction.x;
 
 let gl;
 
 canvas.width = w - 100;
 canvas.height = w - 100;
 
-timeSlider.oninput = function() {T=this.value; timeDisplay.innerHTML= "Time: " + this.value;};
-frictionSlider.oninput = function() {Friction=this.value; frictionDisplay.innerHTML= "Friction: " + this.value;};
-gravitySlider.oninput = function() {g=this.value; gravityDisplay.innerHTML = "Gravity: " + this.value;};
+function setOnInput(slider, valueToSet, display, displayString, axisTypeIndicator) {
+    slider.oninput = function() {
+        if (axisTypeIndicator===XAxisType) {
+            valueToSet.x = 0;
+            display.innerHTML = displayString + "X";
+        }
+        else if (axisTypeIndicator===YAxisType) {
+            valueToSet.x = 0;
+            display.innerHTML = displayString + "Y";
+        }
+        else {
+            valueToSet.x=this.value; 
+            display.innerHTML = displayString + this.value;
+        }
+    };
+}
+function setOnInputY(slider, valueToSet, display, displayString, axisTypeIndicator) {
+    slider.oninput = function() {
+        if (axisTypeIndicator===XAxisType) {
+            valueToSet.y = 0;
+            display.innerHTML = displayString + "X";
+        }
+        else if (axisTypeIndicator===YAxisType) {
+            valueToSet.y = 0;
+            display.innerHTML = displayString + "Y";
+        }
+        else {
+            valueToSet.y=this.value; 
+            display.innerHTML = displayString + this.value;
+        }
+    };
+}
+
+let Labels = [
+    "Pendulum 1 Start Angle",
+    "Pendulum 1 length",
+    "Pendulum 1 mass",
+    "Pendulum 1 Start Vel.",
+    "Pendulum 2 Start Angle",
+    "Pendulum 2 length",
+    "Pendulum 2 mass",
+    "Pendulum 2 Start Vel.",
+    "Gravity",
+    "Time",
+    "Friction",
+];
+
+setOnInput(p1StartAngleSlider, p1StartAngle, p1StartAngleDisplay, "Pendulum 1 Start Angle: ", 1);
+setOnInput(p1LengthSlider, Lengs, p1LengthDisplay, "Pendulum 1 length: ", 2);
+setOnInput(p1MassSlider, Masses, p1MassDisplay, "Pendulum 1 mass: ", 3);
+setOnInput(p1StartVelSlider, p1StartVel, p1StartVelDisplay, "Pendulum 1 Start Vel.: ", 4);
+setOnInput(p2StartAngleSlider, p2StartAngle, p2StartAngleDisplay, "Pendulum 2 Start Angle: ", 5);
+setOnInputY(p2LengthSlider, Lengs, p2LengthDisplay, "Pendulum 2 length: ", 6);
+setOnInputY(p2MassSlider, Masses, p2MassDisplay, "Pendulum 2 mass: ", 7);
+setOnInput(p2StartVelSlider, p2StartVel, p2StartVelDisplay, "Pendulum 2 Start Vel.: ", 8);
+setOnInput(gravitySlider, g, gravityDisplay, "Gravity: ", 9);
+setOnInput(timeSlider, T, timeDisplay, "Time: ", 10);
+setOnInput(frictionSlider, Friction, frictionDisplay, "Friction: ", 11);
+
+xAxisToggle.addEventListener("click",
+    function(){
+        if(XAxisType<10){
+            XAxisType++;
+        }
+        else{
+            XAxisType = 1;
+        }
+        this.innerHTML = "X Axis: " + Labels[XAxisType-1];
+    }
+);
+
+yAxisToggle.addEventListener("click",
+    function(){
+        if(YAxisType<10){
+            YAxisType++;
+        }
+        else{
+            YAxisType = 1;
+        }
+        this.innerHTML = "Y Axis: " + Labels[YAxisType-1];
+    }
+);
 
 playButton.addEventListener("click",
     function(){animating=!animating;}
@@ -87,53 +209,7 @@ function createGl(){
             gl_Position = vec4(vertPosition, 0, 1);
         }`,
 
-        fs:`#version 300 es
-        precision highp float;
-
-        in vec3 fragColor;
-        uniform float Time;
-        uniform vec2 Offset;
-        uniform float Scale;
-        uniform float XAxisType;
-        uniform float YAxisType;
-        uniform vec2 Lengs;
-        uniform vec2 Masses;
-        uniform float g;
-        uniform float Friction;
-
-        out vec4 outColor;
-
-        float Timestep = .05;
-        
-        vec4 Iterat(vec4 zi, vec2 lengs, vec2 masses) {
-            float theta1 = zi.x;
-            float theta2 = zi.y;
-            float w1 = zi.z;
-            float w2 = zi.w;
-            vec2 a = vec2((lengs.y / lengs.x) * (masses.y / (masses.x + masses.y)) * cos(theta1 - theta2),
-                        (lengs.x / lengs.y) * cos(theta1 - theta2));
-            vec2 f = vec2(-(lengs.y / lengs.x) * (masses.y / (masses.x + masses.y)) * (w2*w2) * sin(theta1 - theta2) - ((g / lengs.x) * sin(theta1)),
-                        (lengs.y / lengs.y) * (w1*w1) * sin(theta1 - theta2) - ((g/lengs.y) * sin(theta2)));
-        
-            float g1 = (1.*f.x - (a.x * f.y)) / (1. - (a.x * a.y));
-            float g2 = (-(a.y * f.x) + f.y) / (1. - (a.x * a.y));
-        
-            vec4 endz = vec4(zi.x + Timestep * zi.z, zi.y + Timestep * zi.w, (1. - Friction) * (zi.z + Timestep*g1), (1. - Friction) * (zi.w + Timestep*g2));
-            return endz;
-        }
-        void main(){
-            vec2 fragCoord = vec2(Scale*fragColor.xy) + Offset;
-            float leng1 = Lengs.x;
-            float leng2 = Lengs.y;
-            float mass1 = Masses.x;
-            float mass2 = Masses.y;
-            float PI = 3.1415;
-            vec4 nz = vec4(PI * (fragCoord.x - 1.), PI * (fragCoord.y - 1.), 0.0, 0.0);
-            for (float i=0.; i<Time; i++){
-                nz = Iterat(nz, Lengs, Masses);
-            }
-            outColor = vec4(abs(sin(nz.x/2.)), abs(sin(nz.y/2.)), abs(cos(nz.z/2.)), 1.0);
-        }`
+        fs:fragShad
     };
 
     let vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -187,42 +263,61 @@ function createGl(){
     gl.enableVertexAttribArray(positionAttribLocation);
 
     // Uniforms
-    let timeAttribLocation    = gl.getUniformLocation(program, 'Time');
+    let timeAttribLocation    = gl.getUniformLocation(program, 'TimeIn');
     let offsetAttribLocation  = gl.getUniformLocation(program, 'Offset');
     let scaleAttribLocation   = gl.getUniformLocation(program, 'Scale');
     let xAxisTypeLocation     = gl.getUniformLocation(program, "XAxisType");
     let yAxisTypeLocation     = gl.getUniformLocation(program, "YAxisType");
+
     let lengthsAttribLocation = gl.getUniformLocation(program, 'Lengs');
     let massesAttribLocation  = gl.getUniformLocation(program, 'Masses');
-    let gravityAttribLocation = gl.getUniformLocation(program, 'g');
+    let gravityAttribLocation = gl.getUniformLocation(program, 'G');
     let frictionLocation      = gl.getUniformLocation(program, "Friction"); 
+
+    let p1StartAngleLocation  = gl.getUniformLocation(program, "P1StartAngle");
+    let p2StartAngleLocation  = gl.getUniformLocation(program, "P2StartAngle");
+
+    let p1StartVelLocation    = gl.getUniformLocation(program, "P1StartVel");
+    let p2StartVelLocation    = gl.getUniformLocation(program, "P2StartVel");
 
     gl.useProgram(program);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+    const message = gl.getShaderInfoLog(fragmentShader);
+
+    if (message.length > 0) {
+    console.log(message);
+    }
     animTime();
     function animTime() {
         if(animating){
-            if (T > 300){
-                T = 0;
+            if (T.x > 300){
+                T.x = 0;
             }
-            T++;
+            T.x++;
         }
-        timeSlider.value=T;
-        timeDisplay.innerHTML = "Time: " + T;
-        gl.uniform1f(timeAttribLocation, T);
+        timeSlider.value=T.x;
+        timeDisplay.innerHTML = "Time: " + T.x;
+        gl.uniform1f(timeAttribLocation, T.x);
         gl.uniform2f(offsetAttribLocation, Offsetx, Offsety);
         gl.uniform1f(scaleAttribLocation, Scale);
         gl.uniform1f(xAxisTypeLocation, XAxisType);
         gl.uniform1f(yAxisTypeLocation, YAxisType);
         gl.uniform2f(lengthsAttribLocation, Lengs.x, Lengs.y);
         gl.uniform2f(massesAttribLocation, Masses.x, Masses.y);
-        gl.uniform1f(gravityAttribLocation, g);
-        gl.uniform1f(frictionLocation, Friction);
+        gl.uniform1f(gravityAttribLocation, g.x);
+        gl.uniform1f(frictionLocation, Friction.x);
+
+        gl.uniform1f(p1StartAngleLocation, p1StartAngle.x);
+        gl.uniform1f(p2StartAngleLocation, p2StartAngle.x);
+
+        gl.uniform1f(p1StartVelLocation, p1StartVel.x);
+        gl.uniform1f(p2StartVelLocation, p2StartVel.x);
+
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         setTimeout(requestAnimationFrame(animTime), 20);
     }
 }
 resetButton.addEventListener("click",
-    function(){T=0;}
+    function(){T["x"]=0;}
 );
-createGl();
+

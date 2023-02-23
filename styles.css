@@ -11,9 +11,10 @@ div {
 .pdescription2{
     color: rgb(189, 207, 222);
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size:15;
+    font-size:auto;
+    width: auto;
     margin-top: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
     margin-right: 10px;
     float: right;
 }
@@ -32,16 +33,32 @@ div {
 .button1{
     background-color:rgb(10, 00, 20);
     color: aliceblue;
-    font-size: 16;
+    font-size: 13px;
     border-radius: 10%;
     border-width: 1.6px;
     margin-top: 5px;
+    margin-left: 5px;
     margin-bottom: 5px;
     border-color: rgb(171, 177, 183);
     float:left;
     border-style:solid;
 }
 .button1:hover{
+    background-color: #4d5461;
+}
+.button2{
+    background-color:rgb(10, 00, 20);
+    color: aliceblue;
+    font-size: 16;
+    border-radius: 10px;
+    border-width: 1.6px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-color: rgb(171, 177, 183);
+    float:none;
+    border-style:solid;
+}
+.button2:hover{
     background-color: #4d5461;
 }
 .column1{
@@ -62,9 +79,16 @@ canvas{
 .slider-container{
     float: left;
     width: 90%;
+    height: 80%;
+    background-color: #161717;
+    border-style:solid;
+    border-color: #878790;
+    border-width: 1px;
+    border-radius: 3px;
+    margin-bottom: 3px;
 }
 .slider-container-sub{
-    margin-left: 20px;
+    margin-left: 0px;
     float:auto
 }
 .slider-square{
