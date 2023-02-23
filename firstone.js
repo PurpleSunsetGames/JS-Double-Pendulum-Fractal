@@ -186,7 +186,7 @@ canvas.addEventListener('mouseup',
 () => {drag = false; mouseDown = false}
 );
 
-canvas.addEventListener("wheel", (e) => Scale = Math.max(Scale * (1 + (e.deltaY / 100)), 0.001))
+canvas.addEventListener("wheel", (e) => Scale = Math.max(Scale + (e.deltaY / (1000*Scale))), 0.00001))
 
 function createGl(){
     gl = canvas.getContext("webgl2");
