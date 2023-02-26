@@ -53,30 +53,30 @@ void main(){
     float startVel2 = P2StartVel;
 
     if (XAxisType==1.){startTheta1 = PI * (fragCoord.x-1.);}
-    if (XAxisType==2.){leng1 = PI * (fragCoord.x-1.);}
-    if (XAxisType==3.){mass1 = PI * (fragCoord.x-1.);}
-    if (XAxisType==4.){startVel1 = PI * (fragCoord.x-1.);}
-    if (XAxisType==5.){startTheta2 = PI * (fragCoord.x-1.);}
-    if (XAxisType==6.){leng2 = PI * (fragCoord.x-1.);}
-    if (XAxisType==7.){mass2 = PI * (fragCoord.x-1.);}
-    if (XAxisType==8.){startVel2 = PI * (fragCoord.x-1.);}
-    if (XAxisType==9.){g = PI * (fragCoord.x-1.);}
-    if (XAxisType==10.){Time = PI * (fragCoord.x-1.);}
+    else if (XAxisType==2.){leng1 = PI * (fragCoord.x-1.);}
+    else if (XAxisType==3.){mass1 = PI * (fragCoord.x-1.);}
+    else if (XAxisType==4.){startVel1 = PI * (fragCoord.x-1.);}
+    else if (XAxisType==5.){startTheta2 = PI * (fragCoord.x-1.);}
+    else if (XAxisType==6.){leng2 = PI * (fragCoord.x-1.);}
+    else if (XAxisType==7.){mass2 = PI * (fragCoord.x-1.);}
+    else if (XAxisType==8.){startVel2 = PI * (fragCoord.x-1.);}
+    else if (XAxisType==9.){g = PI * (fragCoord.x-1.);}
+    else if (XAxisType==10.){Time = PI * (fragCoord.x-1.);}
 
-    if (YAxisType==1.){startTheta1 = PI * (fragCoord.y-1.);}
-    if (YAxisType==2.){leng1 = PI * (fragCoord.y-1.);}
-    if (YAxisType==3.){mass1 = PI * (fragCoord.y-1.);}
-    if (YAxisType==4.){startVel1 = PI * (fragCoord.y-1.);}
-    if (YAxisType==5.){startTheta2 = PI * (fragCoord.y-1.);}
-    if (YAxisType==6.){leng2 = PI * (fragCoord.y-1.);}
-    if (YAxisType==7.){mass2 = PI * (fragCoord.y-1.);}
-    if (YAxisType==8.){startVel2 = PI * (fragCoord.y-1.);}
-    if (YAxisType==9.){g = PI * (fragCoord.y-1.);}
-    if (YAxisType==10.){Time = PI * (fragCoord.y-1.);}
+    if (YAxisType==1.){startVel1 = PI * (fragCoord.y-1.);}
+    else if (YAxisType==2.){mass1 = PI * (fragCoord.y-1.);}
+    else if (YAxisType==3.){leng1 = PI * (fragCoord.y-1.);}
+    else if (YAxisType==4.){startVel1 = PI * (fragCoord.y-1.);}
+    else if (YAxisType==5.){startTheta2 = PI * (fragCoord.y-1.);}
+    else if (YAxisType==6.){leng2 = PI * (fragCoord.y-1.);}
+    else if (YAxisType==7.){mass2 = PI * (fragCoord.y-1.);}
+    else if (YAxisType==8.){startVel2 = PI * (fragCoord.y-1.);}
+    else if (YAxisType==9.){g = PI * (fragCoord.y-1.);}
+    else if (YAxisType==10.){Time = PI * (fragCoord.y-1.);}
 
     vec4 nz = vec4(startTheta1, startTheta2, startVel1, startVel2);
     for (float i=0.; i<Time; i++){
-        nz = Iterat(nz, vec2(leng1), vec2(mass1, mass2), g);
+        nz = Iterat(nz, vec2(leng1, leng2), vec2(mass1, mass2), g);
     }
     outColor = vec4(abs(sin(nz.x/2.)), abs(sin(nz.y/2.)), abs(cos(nz.x/2.)), 1.0);
 }
