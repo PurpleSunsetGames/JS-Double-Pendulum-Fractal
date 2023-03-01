@@ -4,6 +4,8 @@ let canvas = document.getElementById("canvas");
 let playButton = document.getElementById("Play");
 let resetButton = document.getElementById("ResetTime");
 let w = Math.min(window.innerWidth, window.innerHeight);;
+let wM = Math.max(window.innerWidth, window.innerHeight);;
+
 let animating = false;
 let timeDisplay = document.getElementById("timeDisplay");
 let timeSlider = document.getElementById("timeSlider");
@@ -41,13 +43,23 @@ let p2StartVelSlider = document.getElementById("p2StartVelSlider");
 let xAxisToggle = document.getElementById("xAxisToggle");
 let yAxisToggle = document.getElementById("yAxisToggle");
 
+let colorMapToggle1 = document.getElementById("colorMapToggle1");
+
+let column2 = document.getElementById("column2");
+let column1 = document.getElementById("column1");
+
+let title1 = document.getElementById("title1");
+let titleDesc = document.getElementById("titleDesc");
+
 let fragShad = "";
 async function getFragShad() {
     fragShad = await fetch("fragmentShader.glsl").then(result=>result.text());
-    console.log(fragShad);
     createGl();
 }
 getFragShad();
+
+let change = true;
+
 let T = {x: 0};
 
 let Offsetx = 1, 
@@ -67,13 +79,18 @@ let p2StartAngle = {x: p2StartAngleSlider.value},
 
 let Lengs = {x: 2, y: 1};
 let Masses = {x: 1, y: 1};
+let ColorType = {x: 1};
 
 frictionDisplay.innerHTML= "Friction: " + Friction.x;
 
 let gl;
 
-canvas.width = w - 100;
-canvas.height = w - 100;
+canvas.width = 2*w;
+canvas.height = 2*w;
+
+function changeTrue(){
+    change = true;
+}
 
 function setOnInput(slider, valueToSet, display, displayString, axisTypeIndicator) {
     slider.oninput = function() {
@@ -89,6 +106,7 @@ function setOnInput(slider, valueToSet, display, displayString, axisTypeIndicato
             valueToSet.x=this.value; 
             display.innerHTML = displayString + this.value;
         }
+        changeTrue();
     };
 }
 function setOnInputY(slider, valueToSet, display, displayString, axisTypeIndicator) {
@@ -105,6 +123,7 @@ function setOnInputY(slider, valueToSet, display, displayString, axisTypeIndicat
             valueToSet.y=this.value; 
             display.innerHTML = displayString + this.value;
         }
+        changeTrue();
     };
 }
 
@@ -143,6 +162,7 @@ xAxisToggle.addEventListener("click",
             XAxisType = 1;
         }
         this.innerHTML = "X Axis: " + Labels[XAxisType-1];
+        changeTrue();
     }
 );
 
@@ -155,12 +175,30 @@ yAxisToggle.addEventListener("click",
             YAxisType = 1;
         }
         this.innerHTML = "Y Axis: " + Labels[YAxisType-1];
+        changeTrue();
     }
 );
 
 playButton.addEventListener("click",
-    function(){animating=!animating;}
+    function(){animating=!animating;changeTrue();}
 );
+
+resetButton.addEventListener("click",
+    function(){T["x"]=0;changeTrue();}
+);
+
+colorMapToggle1.addEventListener("click",
+    function(){
+        if(ColorType.x<2){
+            ColorType.x++;
+        }
+        else{
+            ColorType.x = 1;
+        }
+        this.innerHTML = "Color map option: " + ColorType.x;
+        changeTrue();
+    }
+)
 
 let drag = false;
 let mouseDown = false;
@@ -171,22 +209,23 @@ canvas.addEventListener("mousemove", (e)=>{
     xMouse = e.clientX;
     yMouse = e.clientY;
     if(mouseDown){
-        Offsetx += (draggedXMouse - xMouse) * (Scale / 100);
-        Offsety -= (draggedYMouse - yMouse) * (Scale / 100);
+        Offsetx += .35 * (draggedXMouse - xMouse) * (Scale / 100);
+        Offsety -= .35 * (draggedYMouse - yMouse) * (Scale / 100);
     }
     draggedXMouse = xMouse;
     draggedYMouse = yMouse;
+    changeTrue()
 })
 
 canvas.addEventListener('mousedown', 
-() => {drag = false; mouseDown = true}
+() => {drag = false; mouseDown = true; changeTrue();}
 );
 
-canvas.addEventListener('mouseup', 
+window.addEventListener('mouseup', 
 () => {drag = false; mouseDown = false}
 );
 
-canvas.addEventListener("wheel", (e) => Scale = Scale + ((Scale*e.deltaY)/(100)));
+canvas.addEventListener("wheel", (e) => function(){Scale = (Scale+((e.deltaY*Scale)/1000)); changeTrue(); console.log("s")}());
 
 function createGl(){
     gl = canvas.getContext("webgl2");
@@ -280,6 +319,8 @@ function createGl(){
     let p1StartVelLocation    = gl.getUniformLocation(program, "P1StartVel");
     let p2StartVelLocation    = gl.getUniformLocation(program, "P2StartVel");
 
+    let colorTypeLocation     = gl.getUniformLocation(program, "ColorType");
+
     gl.useProgram(program);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     const message = gl.getShaderInfoLog(fragmentShader);
@@ -287,37 +328,79 @@ function createGl(){
     if (message.length > 0) {
         console.log(message);
     }
+    let fullScreened = false;
+
+    window.addEventListener("keydown",
+        function(e){
+            if(e.key === 'f') {
+                if (fullScreened === false){
+                    column2.style.display = 'none';
+                    title1.style.display = 'none';
+                    titleDesc.style.display = 'none';
+                    column1.style.width = "100%";
+                    gl.viewport(0.0, 0.0, 4 * w * window.innerWidth/window.innerHeight, 4*(wM * window.innerHeight/window.innerWidth + 100));
+
+                    canvas.width = 2*(w * window.innerWidth/window.innerHeight);
+                    canvas.height = 2*(wM * window.innerHeight/window.innerWidth + 100);
+                    fullScreened = true;
+                    
+                    changeTrue();
+                }
+                else if (fullScreened === true){
+                    column2.style.display = '';
+                    column1.style.width = "50%";
+                    title1.style.display = '';
+                    titleDesc.style.display = '';
+                    gl.viewport(0.0, 0.0, 2*w,2*(w));
+
+                    canvas.width = 2*w;
+                    canvas.height = 2*w;
+                    
+                    fullScreened = false;
+                    changeTrue();
+                }
+            }
+            console.log(e.key);
+            if(e.key === ' ') {
+                animating=!animating;
+                changeTrue();
+            }
+        }
+    );
     animTime();
     function animTime() {
-        if(animating){
-            if (T.x > 300){
-                T.x = 0;
+        if(change){
+            change = false;
+            if(animating){
+                if (T.x > 300){
+                    T.x = 0;
+                }
+                T.x++;
+                changeTrue();
             }
-            T.x++;
+            timeSlider.value=T.x;
+            timeDisplay.innerHTML = "Time: " + T.x;
+            gl.uniform1f(timeAttribLocation, T.x);
+            gl.uniform2f(offsetAttribLocation, Offsetx, Offsety);
+            gl.uniform1f(scaleAttribLocation, Scale);
+            gl.uniform1f(xAxisTypeLocation, XAxisType);
+            gl.uniform1f(yAxisTypeLocation, YAxisType);
+            gl.uniform2f(lengthsAttribLocation, Lengs.x, Lengs.y);
+            gl.uniform2f(massesAttribLocation, Masses.x, Masses.y);
+            gl.uniform1f(gravityAttribLocation, g.x);
+            gl.uniform1f(frictionLocation, Friction.x);
+
+            gl.uniform1f(p1StartAngleLocation, p1StartAngle.x);
+            gl.uniform1f(p2StartAngleLocation, p2StartAngle.x);
+
+            gl.uniform1f(p1StartVelLocation, p1StartVel.x);
+            gl.uniform1f(p2StartVelLocation, p2StartVel.x);
+
+            gl.uniform1f(colorTypeLocation, ColorType.x);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
         }
-        timeSlider.value=T.x;
-        timeDisplay.innerHTML = "Time: " + T.x;
-        gl.uniform1f(timeAttribLocation, T.x);
-        gl.uniform2f(offsetAttribLocation, Offsetx, Offsety);
-        gl.uniform1f(scaleAttribLocation, Scale);
-        gl.uniform1f(xAxisTypeLocation, XAxisType);
-        gl.uniform1f(yAxisTypeLocation, YAxisType);
-        gl.uniform2f(lengthsAttribLocation, Lengs.x, Lengs.y);
-        gl.uniform2f(massesAttribLocation, Masses.x, Masses.y);
-        gl.uniform1f(gravityAttribLocation, g.x);
-        gl.uniform1f(frictionLocation, Friction.x);
-
-        gl.uniform1f(p1StartAngleLocation, p1StartAngle.x);
-        gl.uniform1f(p2StartAngleLocation, p2StartAngle.x);
-
-        gl.uniform1f(p1StartVelLocation, p1StartVel.x);
-        gl.uniform1f(p2StartVelLocation, p2StartVel.x);
-
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
         setTimeout(requestAnimationFrame(animTime), 20);
     }
 }
-resetButton.addEventListener("click",
-    function(){T["x"]=0;}
-);
 

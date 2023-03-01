@@ -6,12 +6,12 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body bgcolor="#111111">
-    <div class="column1">
-      <h1 class="header1"><em>Double Pendulum Fractal</em></h1>
-      <p class="pdescription"><em>Representation of the Evolution of All Possible Double Pendulums</em></p>
+    <div class="column1" id="column1">
+      <h1 class="header1" id="title1"><em>Double Pendulum Fractal</em></h1>
+      <p class="pdescription" id="titleDesc"><em>Representation of the Evolution of All Possible Double Pendulums</em></p>
       <canvas id="canvas" width="200" height="100"></canvas>
     </div>
-    <div class="column2">
+    <div class="column2" id="column2">
       <p class="pmini">Settings</p>
       <div>
         <div class="slider-container">
@@ -33,7 +33,7 @@
         easter egg :)
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p1StartAngleSlider">
-          <p id="p1StartAngleDisplay" class="pdescription2">Pendulum 1 start angle: 1</p>
+          <p id="p1StartAngleDisplay" class="pdescription2">Pendulum 1 start angle: 0</p>
         </div>
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="p1LengthSlider">
@@ -45,12 +45,12 @@
         </div>
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p1StartVelSlider">
-          <p id="p1StartVelDisplay" class="pdescription2">Pendulum 1 start vel.: 1</p>
+          <p id="p1StartVelDisplay" class="pdescription2">Pendulum 1 start vel.: 0</p>
         </div>
         
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p2StartAngleSlider">
-          <p id="p2StartAngleDisplay" class="pdescription2">Pendulum 2 start angle: 1</p>
+          <p id="p2StartAngleDisplay" class="pdescription2">Pendulum 2 start angle: 0</p>
         </div>
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="p2LengthSlider">
@@ -62,11 +62,14 @@
         </div>
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p2StartVelSlider">
-          <p id="p2StartVelDisplay" class="pdescription2">Pendulum 2 start vel.: 1</p>
+          <p id="p2StartVelDisplay" class="pdescription2">Pendulum 2 start vel.: 0</p>
         </div>
         <div class="slider-container">
           <button id="xAxisToggle" class="button2">X Axis: Pendulum 1 start angle</button>
           <button id="yAxisToggle" class="button2">Y Axis: Pendulum 2 start angle</button>
+        </div>
+        <div class="slider-container">
+          <button id="colorMapToggle1" class="button2">Color map option: 1</button>
         </div>
         </div>
     </div>
