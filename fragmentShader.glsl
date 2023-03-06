@@ -31,9 +31,9 @@ vec4 Iterat(vec4 zi, vec2 lengs, vec2 masses, float g) {
     vec2 a = vec2((lengs.y / lengs.x) * (masses.y / (masses.x + masses.y)) * cos(theta1 - theta2),
                 (lengs.x / lengs.y) * cos(theta1 - theta2));
     vec2 f = vec2(-(lengs.y / lengs.x) * (masses.y / (masses.x + masses.y)) * (w2*w2) * sin(theta1 - theta2) - ((g / lengs.x) * sin(theta1)),
-                (lengs.y / lengs.y) * (w1*w1) * sin(theta1 - theta2) - ((g/lengs.y) * sin(theta2)));
+                (lengs.x / lengs.y) * (w1*w1) * sin(theta1 - theta2) - ((g/lengs.y) * sin(theta2)));
 
-    float g1 = (1.*f.x - (a.x * f.y)) / (1. - (a.x * a.y));
+    float g1 = (f.x - (a.x * f.y)) / (1. - (a.x * a.y));
     float g2 = (-(a.y * f.x) + f.y) / (1. - (a.x * a.y));
 
     vec4 endz = vec4(zi.x + Timestep * zi.z, zi.y + Timestep * zi.w, (1. - Friction) * (zi.z + Timestep*g1), (1. - Friction) * (zi.w + Timestep*g2));
@@ -78,7 +78,7 @@ vec3 hsv2rgb(vec3 HSV) {
 void main(){
     float PI = 3.1415;
 
-    vec2 fragCoord = vec2(Scale*fragColor.xy) + Offset;
+    vec2 fragCoord = PI*(vec2(Scale*fragColor.xy) + Offset - 1.);
     float Time = TimeIn;
     float g = G;
     float startTheta1 = P1StartAngle;
@@ -90,27 +90,27 @@ void main(){
     float startVel1 = P1StartVel;
     float startVel2 = P2StartVel;
 
-    if (XAxisType==1.){startTheta1 = PI * (fragCoord.x-1.);}
-    else if (XAxisType==2.){leng1 = PI * (fragCoord.x-1.);}
-    else if (XAxisType==3.){mass1 = PI * (fragCoord.x-1.);}
-    else if (XAxisType==4.){startVel1 = PI * (fragCoord.x-1.);}
-    else if (XAxisType==5.){startTheta2 = PI * (fragCoord.x-1.);}
-    else if (XAxisType==6.){leng2 = PI * (fragCoord.x-1.);}
-    else if (XAxisType==7.){mass2 = PI * (fragCoord.x-1.);}
-    else if (XAxisType==8.){startVel2 = PI * (fragCoord.x-1.);}
-    else if (XAxisType==9.){g = PI * (fragCoord.x-1.);}
-    else if (XAxisType==10.){Time = PI * (fragCoord.x-1.);}
+    if (XAxisType==1.){startTheta1 = fragCoord.x;}
+    else if (XAxisType==2.){leng1 = fragCoord.x;}
+    else if (XAxisType==3.){mass1 = fragCoord.x;}
+    else if (XAxisType==4.){startVel1 = fragCoord.x;}
+    else if (XAxisType==5.){startTheta2 = fragCoord.x;}
+    else if (XAxisType==6.){leng2 = fragCoord.x;}
+    else if (XAxisType==7.){mass2 = fragCoord.x;}
+    else if (XAxisType==8.){startVel2 = fragCoord.x;}
+    else if (XAxisType==9.){g = fragCoord.x;}
+    else if (XAxisType==10.){Time = fragCoord.x;}
 
-    if (YAxisType==1.){startVel1 = PI * (fragCoord.y-1.);}
-    else if (YAxisType==2.){mass1 = PI * (fragCoord.y-1.);}
-    else if (YAxisType==3.){leng1 = PI * (fragCoord.y-1.);}
-    else if (YAxisType==4.){startVel1 = PI * (fragCoord.y-1.);}
-    else if (YAxisType==5.){startTheta2 = PI * (fragCoord.y-1.);}
-    else if (YAxisType==6.){leng2 = PI * (fragCoord.y-1.);}
-    else if (YAxisType==7.){mass2 = PI * (fragCoord.y-1.);}
-    else if (YAxisType==8.){startVel2 = PI * (fragCoord.y-1.);}
-    else if (YAxisType==9.){g = PI * (fragCoord.y-1.);}
-    else if (YAxisType==10.){Time = PI * (fragCoord.y-1.);}
+    if (YAxisType==1.){startVel1 = fragCoord.y;}
+    else if (YAxisType==2.){mass1 = fragCoord.y;}
+    else if (YAxisType==3.){leng1 = fragCoord.y;}
+    else if (YAxisType==4.){startVel1 = fragCoord.y;}
+    else if (YAxisType==5.){startTheta2 = fragCoord.y;}
+    else if (YAxisType==6.){leng2 = fragCoord.y;}
+    else if (YAxisType==7.){mass2 = fragCoord.y;}
+    else if (YAxisType==8.){startVel2 = fragCoord.y;}
+    else if (YAxisType==9.){g = fragCoord.y;}
+    else if (YAxisType==10.){Time = fragCoord.y;}
 
     vec4 nz = vec4(startTheta1, startTheta2, startVel1, startVel2);
     for (float i=0.; i<Time; i++){
@@ -122,5 +122,16 @@ void main(){
     }
     else if (ColorType == 2.0) {
         outColor = vec4(hsv2rgb(vec3(mod((nz.x+PI)/(2.0*PI), 1.0), 1.0, mod((nz.y+PI)/(2.0*PI),1.0))), 1.0);
+    }
+    else if (ColorType == 3.0) {
+        outColor = vec4(abs(sin(nz.z/2.))+abs(sin(nz.w/2.)), abs(sin(nz.w/2.)), abs(cos(nz.z/2.)), 1.0);
+    }
+    else if (ColorType == 4.0) {
+        outColor = vec4(hsv2rgb(vec3(mod((nz.z+PI)/(2.0*PI), 1.0), 1.0, mod((nz.w+PI)/(2.0*PI),1.0))), 1.0);
+    }
+    else if (ColorType == 5.0) {
+        float potentialEnergy = (-mass1*g*leng1*cos(nz.x) - mass2*g*(leng1*cos(nz.x) + leng2*cos(nz.y)));
+        potentialEnergy = ((1.0 / (1.0 + exp(-(potentialEnergy) * .2))) - .5) * 2.;
+        outColor = vec4(potentialEnergy, potentialEnergy, potentialEnergy, 0.0);
     }
 }

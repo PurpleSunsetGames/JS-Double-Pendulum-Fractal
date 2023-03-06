@@ -61,9 +61,24 @@ div {
 .button2:hover{
     background-color: #4d5461;
 }
+.button3{
+    background-color:rgb(10, 00, 20);
+    color: aliceblue;
+    font-size: 13px;
+    border-radius: 10px;
+    border-width: 1.6px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-color: rgb(171, 177, 183);
+    float:none;
+    border-style:solid;
+}
+.button3:hover{
+    background-color: #4d5461;
+}
 .column1{
     float: left;
-    width: 50%;
+    width: 48%;
     max-height:min-content
 }
 .column2{
@@ -86,6 +101,13 @@ canvas{
     border-width: 1px;
     border-radius: 3px;
     margin-bottom: 3px;
+}
+.slider-container2{
+    width: 80%;
+    margin-left: 10%;
+    margin-right: 10%;
+    height: 80%;
+    background-color: #161717;
 }
 .slider-container-sub{
     margin-left: 0px;

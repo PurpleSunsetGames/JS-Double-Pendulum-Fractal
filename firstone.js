@@ -3,8 +3,8 @@
 let canvas = document.getElementById("canvas");
 let playButton = document.getElementById("Play");
 let resetButton = document.getElementById("ResetTime");
-let w = Math.min(window.innerWidth, window.innerHeight);;
-let wM = Math.max(window.innerWidth, window.innerHeight);;
+let w = Math.min(window.innerWidth, window.innerHeight);
+let wM = Math.max(window.innerWidth, window.innerHeight);
 
 let animating = false;
 let timeDisplay = document.getElementById("timeDisplay");
@@ -45,6 +45,8 @@ let yAxisToggle = document.getElementById("yAxisToggle");
 
 let colorMapToggle1 = document.getElementById("colorMapToggle1");
 
+let resButton = document.getElementById("resButton");
+
 let column2 = document.getElementById("column2");
 let column1 = document.getElementById("column1");
 
@@ -80,6 +82,8 @@ let p2StartAngle = {x: p2StartAngleSlider.value},
 let Lengs = {x: 2, y: 1};
 let Masses = {x: 1, y: 1};
 let ColorType = {x: 1};
+
+let Res = 1;
 
 frictionDisplay.innerHTML= "Friction: " + Friction.x;
 
@@ -186,16 +190,33 @@ playButton.addEventListener("click",
 resetButton.addEventListener("click",
     function(){T["x"]=0;changeTrue();}
 );
+let resList = [
+    "Low",
+    "High",
+    "Very High"
+]
+let resLevels = [
+    .5,
+    1,
+    4
+]
+let colorMapOptions = [
+    "Final Angles (RGB)",
+    "Final Angles (Hue and Value)",
+    "Final Velocities (RGB)",
+    "Final Velocities (Hue and Value)",
+    "Potential Energy (Value)"
+]
 
 colorMapToggle1.addEventListener("click",
     function(){
-        if(ColorType.x<2){
+        if(ColorType.x<(colorMapOptions.length)){
             ColorType.x++;
         }
         else{
             ColorType.x = 1;
         }
-        this.innerHTML = "Color map option: " + ColorType.x;
+        this.innerHTML = "Color map: " + colorMapOptions[ColorType.x-1];
         changeTrue();
     }
 )
@@ -206,11 +227,9 @@ let xMouse, yMouse;
 let draggedXMouse=0,
     draggedYMouse=0;
 canvas.addEventListener("mousemove", (e)=>{
-    xMouse = e.clientX;
-    yMouse = e.clientY;
     if(mouseDown){
-        Offsetx += .35 * (draggedXMouse - xMouse) * (Scale / 100);
-        Offsety -= .35 * (draggedYMouse - yMouse) * (Scale / 100);
+        Offsety += (e.movementY/(.5*canvas.clientWidth)) * (Scale);
+        Offsetx -= (e.movementX/(.5*canvas.clientWidth)) * (Scale);
     }
     draggedXMouse = xMouse;
     draggedYMouse = yMouse;
@@ -323,13 +342,39 @@ function createGl(){
 
     gl.useProgram(program);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.viewport(0.0, 0.0, .5*w,.5*(w));
+    canvas.width = .5*w;
+    canvas.height = .5*w;
     const message = gl.getShaderInfoLog(fragmentShader);
 
     if (message.length > 0) {
         console.log(message);
     }
     let fullScreened = false;
-
+    resButton.addEventListener("click",
+        function(){
+            if(Res===3){
+                Res=1;
+            }
+            else{
+                Res++;
+            }
+            console.log(Res);
+            this.innerHTML = "Resolution: " + resList[Res-1];
+            let resFac = resLevels[Res-1];
+            if(fullScreened===true){
+                gl.viewport(0.0, 0.0, resFac*w*window.innerWidth/window.innerHeight, resFac*w*window.innerWidth/window.innerHeight);
+                canvas.width = resFac*(w * window.innerWidth/window.innerHeight);
+                canvas.height = resFac*(wM * window.innerHeight/window.innerWidth);
+            }
+            else{
+                gl.viewport(0.0, 0.0, resFac*w,resFac*w);
+                canvas.width = resFac*w;
+                canvas.height = resFac*w;
+            }
+            changeTrue(); 
+        }
+    )
     window.addEventListener("keydown",
         function(e){
             if(e.key === 'f') {
@@ -338,25 +383,30 @@ function createGl(){
                     title1.style.display = 'none';
                     titleDesc.style.display = 'none';
                     column1.style.width = "100%";
-                    gl.viewport(0.0, 0.0, 4 * w * window.innerWidth/window.innerHeight, 4*(wM * window.innerHeight/window.innerWidth + 100));
 
-                    canvas.width = 2*(w * window.innerWidth/window.innerHeight);
-                    canvas.height = 2*(wM * window.innerHeight/window.innerWidth + 100);
+                    let resFac = resLevels[Res-1];
+                    gl.viewport(0.0, 0.0, resFac*w*window.innerWidth/window.innerHeight, resFac*w*window.innerWidth/window.innerHeight);
+                    canvas.width = resFac*(w * window.innerWidth/window.innerHeight);
+                    canvas.height = resFac*(wM * window.innerHeight/window.innerWidth);
+                    canvas.style.marginTop = "2%";
                     fullScreened = true;
                     
                     changeTrue();
                 }
                 else if (fullScreened === true){
+                    canvas.style.marginTop = "0%";
                     column2.style.display = '';
-                    column1.style.width = "50%";
+                    column1.style.width = "48%";
                     title1.style.display = '';
                     titleDesc.style.display = '';
-                    gl.viewport(0.0, 0.0, 2*w,2*(w));
 
-                    canvas.width = 2*w;
-                    canvas.height = 2*w;
+                    let resFac = resLevels[Res-1];
+                    gl.viewport(0.0, 0.0, resFac*w,resFac*w);
+                    canvas.width = resFac*w;
+                    canvas.height = resFac*w;
                     
                     fullScreened = false;
+
                     changeTrue();
                 }
             }
