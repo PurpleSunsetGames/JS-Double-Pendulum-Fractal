@@ -14,9 +14,19 @@ div {
     font-size:auto;
     width: auto;
     margin-top: 5px;
-    margin-bottom: 1px;
-    margin-right: 10px;
+    margin-bottom: 5px;
+    margin-right: 9px;
     float: right;
+}
+.pdescription3{
+    color: rgb(189, 207, 222);
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size:16px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5%;
+    margin-right: 8%;
+    float: left;
 }
 .pmini{
     color: rgb(189, 207, 222);
@@ -70,7 +80,7 @@ div {
     margin-top: 5px;
     margin-bottom: 5px;
     border-color: rgb(171, 177, 183);
-    float:none;
+    float:inherit;
     border-style:solid;
 }
 .button3:hover{
@@ -83,31 +93,30 @@ div {
 }
 .column2{
     float: right;
-    width: 50%;
+    width: 52%;
     height:100%;
 }
 canvas{
-    width: 80%;
-    height:80%;
+    width: 78.5%;
+    height:78.5%;
     max-height:min-content;
 }
 .slider-container{
     float: left;
-    width: 90%;
+    width: 100%;
     height: 80%;
     background-color: #161717;
     border-style:solid;
     border-color: #878790;
     border-width: 1px;
     border-radius: 3px;
-    margin-bottom: 3px;
+    margin-bottom: 8px;
 }
 .slider-container2{
     width: 80%;
     margin-left: 10%;
     margin-right: 10%;
     height: 80%;
-    background-color: #161717;
 }
 .slider-container-sub{
     margin-left: 0px;
@@ -135,4 +144,9 @@ canvas{
 }
 .slider-square::-webkit-slider-thumb:hover{
     opacity: .8;
+}
+
+.pendCanvas1{
+    width: 0%;
+    height: 0%;
 }

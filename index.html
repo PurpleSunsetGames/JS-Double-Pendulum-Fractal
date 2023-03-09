@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta name="keywords" content="pendulum, physics, HTML, CSS, JavaScript">
+    <meta name="author" content="The Spudguy">
+    <meta name="description" content="A representation of the evolution of all possible double pendulums.">
+
     <meta charset="utf-8">
     <title>Double Pendulum</title>
     <link rel="stylesheet" href="styles.css">
@@ -11,8 +15,19 @@
       <p class="pdescription" id="titleDesc"><em>Representation of the Evolution of All Possible Double Pendulums</em></p>
       <canvas id="canvas" width="200" height="100"></canvas>
       <div class="slider-container2">
-        <button id="resButton" class="button3">Resolution: Low</button>
+        <div style="width:50%; float:left; margin-right: 0%;">
+          <p class="pdescription3">Resolution: </p>
+          <button id="resButton1" class="button3">Low</button>
+          <button id="resButton2" class="button3">High</button>
+          <button id="resButton3" class="button3">Very High</button>
+        </div>
+        <div style="width:50%; float:right">
+          <button id="pendToggleButton" class="button3">Show Pendulum</button>
+          <button id="downloadButton" class="button3">Download</button>
+        </div>
+
       </div>
+      <canvas id="pendCanvas" width="200" height="200" class="pendCanvas1"></canvas>
     </div>
     <div class="column2" id="column2">
       <p class="pmini">Settings</p>
@@ -26,8 +41,8 @@
           </div>
         </div>
         <div class="slider-container">
-          <input type="range" min="0" max="1" step=".01" value="0" class="slider-square" id="frictionSlider">
-          <p id="frictionDisplay" class="pdescription2">Friction: 0</p>
+          <input type="range" min="0" max="1" step=".001" value="0.01" class="slider-square" id="frictionSlider">
+          <p id="frictionDisplay" class="pdescription2">Friction: 0.01</p>
         </div>
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="gravitySlider">
@@ -79,5 +94,6 @@
     <script src="webgl-debug.js"></script>
     <script src="fragmentShader.glsl" id="fragShad"></script>
     <script src="firstone.js"></script>
+    <script src="pendulum.js"></script>
   </body>
 </html>

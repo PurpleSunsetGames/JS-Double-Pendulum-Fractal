@@ -76,7 +76,7 @@ vec3 hsv2rgb(vec3 HSV) {
     return RGB + M;
 }
 void main(){
-    float PI = 3.1415;
+    float PI = 3.141592654;
 
     vec2 fragCoord = PI*(vec2(Scale*fragColor.xy) + Offset - 1.);
     float Time = TimeIn;
@@ -132,6 +132,6 @@ void main(){
     else if (ColorType == 5.0) {
         float potentialEnergy = (-mass1*g*leng1*cos(nz.x) - mass2*g*(leng1*cos(nz.x) + leng2*cos(nz.y)));
         potentialEnergy = ((1.0 / (1.0 + exp(-(potentialEnergy) * .2))) - .5) * 2.;
-        outColor = vec4(potentialEnergy, potentialEnergy, potentialEnergy, 0.0);
+        outColor = vec4(potentialEnergy, potentialEnergy, potentialEnergy, 1.0);
     }
 }

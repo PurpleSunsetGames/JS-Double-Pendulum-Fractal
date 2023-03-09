@@ -1,62 +1,68 @@
 'use strict';
 
-let canvas = document.getElementById("canvas");
+let canvas1 = document.getElementById("canvas");
+let pendCanvas = document.getElementById("pendCanvas");
 let playButton = document.getElementById("Play");
 let resetButton = document.getElementById("ResetTime");
+let downloadButton = document.getElementById("downloadButton");
 let w = Math.min(window.innerWidth, window.innerHeight);
 let wM = Math.max(window.innerWidth, window.innerHeight);
 
 let animating = false;
 let timeDisplay = document.getElementById("timeDisplay");
-let timeSlider = document.getElementById("timeSlider");
+let timeSlider =  document.getElementById("timeSlider");
 
 let frictionDisplay = document.getElementById("frictionDisplay");
-let frictionSlider = document.getElementById("frictionSlider");
+let frictionSlider =  document.getElementById("frictionSlider");
 
 let gravityDisplay = document.getElementById("gravityDisplay");
-let gravitySlider = document.getElementById("gravitySlider");
+let gravitySlider =  document.getElementById("gravitySlider");
 
 let p1StartAngleDisplay = document.getElementById("p1StartAngleDisplay");
-let p1StartAngleSlider = document.getElementById("p1StartAngleSlider");
+let p1StartAngleSlider =  document.getElementById("p1StartAngleSlider");
 
 let p1LengthDisplay = document.getElementById("p1LengthDisplay");
-let p1LengthSlider = document.getElementById("p1LengthSlider");
+let p1LengthSlider =  document.getElementById("p1LengthSlider");
 
 let p1MassDisplay = document.getElementById("p1MassDisplay");
-let p1MassSlider = document.getElementById("p1MassSlider");
+let p1MassSlider =  document.getElementById("p1MassSlider");
 
 let p1StartVelDisplay = document.getElementById("p1StartVelDisplay");
-let p1StartVelSlider = document.getElementById("p1StartVelSlider");
+let p1StartVelSlider =  document.getElementById("p1StartVelSlider");
 
 let p2StartAngleDisplay = document.getElementById("p2StartAngleDisplay");
-let p2StartAngleSlider = document.getElementById("p2StartAngleSlider");
+let p2StartAngleSlider =  document.getElementById("p2StartAngleSlider");
 
 let p2LengthDisplay = document.getElementById("p2LengthDisplay");
-let p2LengthSlider = document.getElementById("p2LengthSlider");
+let p2LengthSlider =  document.getElementById("p2LengthSlider");
 
 let p2MassDisplay = document.getElementById("p2MassDisplay");
-let p2MassSlider = document.getElementById("p2MassSlider");
+let p2MassSlider =  document.getElementById("p2MassSlider");
 
 let p2StartVelDisplay = document.getElementById("p2StartVelDisplay");
-let p2StartVelSlider = document.getElementById("p2StartVelSlider");
+let p2StartVelSlider =  document.getElementById("p2StartVelSlider");
 
 let xAxisToggle = document.getElementById("xAxisToggle");
 let yAxisToggle = document.getElementById("yAxisToggle");
 
 let colorMapToggle1 = document.getElementById("colorMapToggle1");
 
-let resButton = document.getElementById("resButton");
+let resButton1 = document.getElementById("resButton1");
+let resButton2 = document.getElementById("resButton2");
+let resButton3 = document.getElementById("resButton3");
 
-let column2 = document.getElementById("column2");
-let column1 = document.getElementById("column1");
+let column2 =   document.getElementById("column2");
+let column1 =   document.getElementById("column1");
 
-let title1 = document.getElementById("title1");
+let title1 =    document.getElementById("title1");
 let titleDesc = document.getElementById("titleDesc");
+
+let pendToggleButton = document.getElementById("pendToggleButton");
 
 let fragShad = "";
 async function getFragShad() {
     fragShad = await fetch("fragmentShader.glsl").then(result=>result.text());
-    createGl();
+    createGl(canvas1, true);
 }
 getFragShad();
 
@@ -79,18 +85,20 @@ let p1StartAngle = {x: p1StartAngleSlider.value},
 let p2StartAngle = {x: p2StartAngleSlider.value},
     p2StartVel = {x: p2StartVelSlider.value};
 
-let Lengs = {x: 2, y: 1};
+let Lengs = {x: 1, y: 1};
 let Masses = {x: 1, y: 1};
 let ColorType = {x: 1};
 
 let Res = 1;
 
+let pendToggled = false;
+
 frictionDisplay.innerHTML= "Friction: " + Friction.x;
 
 let gl;
 
-canvas.width = 2*w;
-canvas.height = 2*w;
+canvas1.width = 2*w;
+canvas1.height = 2*w;
 
 function changeTrue(){
     change = true;
@@ -99,34 +107,30 @@ function changeTrue(){
 function setOnInput(slider, valueToSet, display, displayString, axisTypeIndicator) {
     slider.oninput = function() {
         if (axisTypeIndicator===XAxisType) {
-            valueToSet.x = 0;
-            display.innerHTML = displayString + "X";
+            display.innerHTML = displayString + this.value + ", X";
         }
         else if (axisTypeIndicator===YAxisType) {
-            valueToSet.x = 0;
-            display.innerHTML = displayString + "Y";
+            display.innerHTML = displayString + this.value + ", Y";
         }
         else {
-            valueToSet.x=this.value; 
             display.innerHTML = displayString + this.value;
         }
+        valueToSet.x=parseFloat(this.value); 
         changeTrue();
     };
 }
 function setOnInputY(slider, valueToSet, display, displayString, axisTypeIndicator) {
     slider.oninput = function() {
         if (axisTypeIndicator===XAxisType) {
-            valueToSet.y = 0;
-            display.innerHTML = displayString + "X";
+            display.innerHTML = displayString + this.value + ", X";
         }
         else if (axisTypeIndicator===YAxisType) {
-            valueToSet.y = 0;
-            display.innerHTML = displayString + "Y";
+            display.innerHTML = displayString + this.value + ", Y";
         }
         else {
-            valueToSet.y=this.value; 
             display.innerHTML = displayString + this.value;
         }
+        valueToSet.y=parseFloat(this.value);
         changeTrue();
     };
 }
@@ -190,6 +194,23 @@ playButton.addEventListener("click",
 resetButton.addEventListener("click",
     function(){T["x"]=0;changeTrue();}
 );
+
+pendToggleButton.addEventListener("click",
+    function(){
+        pendToggled = !pendToggled;
+        if (pendToggled){
+            pendCanvas.style.width = "50%";
+            pendCanvas.style.display = "";
+            canvas1.style.width = "30%";
+        }
+        else{
+            pendCanvas.style.display = "none";
+            canvas1.style.width = "80%";
+        }
+    }
+);
+
+
 let resList = [
     "Low",
     "High",
@@ -226,7 +247,8 @@ let mouseDown = false;
 let xMouse, yMouse;
 let draggedXMouse=0,
     draggedYMouse=0;
-canvas.addEventListener("mousemove", (e)=>{
+
+canvas1.addEventListener("mousemove", (e)=>{
     if(mouseDown){
         Offsety += (e.movementY/(.5*canvas.clientWidth)) * (Scale);
         Offsetx -= (e.movementX/(.5*canvas.clientWidth)) * (Scale);
@@ -236,7 +258,7 @@ canvas.addEventListener("mousemove", (e)=>{
     changeTrue()
 })
 
-canvas.addEventListener('mousedown', 
+canvas1.addEventListener('mousedown', 
 () => {drag = false; mouseDown = true; changeTrue();}
 );
 
@@ -244,9 +266,19 @@ window.addEventListener('mouseup',
 () => {drag = false; mouseDown = false}
 );
 
-canvas.addEventListener("wheel", (e) => function(){Scale = (Scale+((e.deltaY*Scale)/1000)); changeTrue(); console.log("s")}());
+canvas1.addEventListener("wheel", (e) => function(){Scale = (Scale+((e.deltaY*Scale)/1000)); changeTrue();}());
 
-function createGl(){
+const saveBlob = (blob, fileName) => {
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+
+    a.href = window.URL.createObjectURL(blob);
+    a.download = fileName;
+    a.click();
+    a.remove();
+}
+
+function createGl(canvas, visual){
     gl = canvas.getContext("webgl2");
 
     if (!gl) {
@@ -342,37 +374,46 @@ function createGl(){
 
     gl.useProgram(program);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
-    gl.viewport(0.0, 0.0, .5*w,.5*(w));
-    canvas.width = .5*w;
-    canvas.height = .5*w;
     const message = gl.getShaderInfoLog(fragmentShader);
 
     if (message.length > 0) {
         console.log(message);
     }
     let fullScreened = false;
-    resButton.addEventListener("click",
+    let capture = false;
+    gl.viewport(0.0, 0.0, .5*w,.5*(w));
+    canvas.width = .5*w;
+    canvas.height = .5*w;
+    function setRes(){
+        let resFac = resLevels[Res-1];
+        if(fullScreened===true){
+            gl.viewport(0.0, 0.0, resFac*w*window.innerWidth/window.innerHeight, resFac*w*window.innerWidth/window.innerHeight);
+            canvas.width = resFac*(w * window.innerWidth/window.innerHeight);
+            canvas.height = resFac*(wM * window.innerHeight/window.innerWidth);
+        }
+        else{
+            gl.viewport(0.0, 0.0, resFac*w,resFac*w);
+            canvas.width = resFac*w;
+            canvas.height = resFac*w;
+        }
+        changeTrue(); 
+    }
+    resButton1.addEventListener("click",
         function(){
-            if(Res===3){
-                Res=1;
-            }
-            else{
-                Res++;
-            }
-            console.log(Res);
-            this.innerHTML = "Resolution: " + resList[Res-1];
-            let resFac = resLevels[Res-1];
-            if(fullScreened===true){
-                gl.viewport(0.0, 0.0, resFac*w*window.innerWidth/window.innerHeight, resFac*w*window.innerWidth/window.innerHeight);
-                canvas.width = resFac*(w * window.innerWidth/window.innerHeight);
-                canvas.height = resFac*(wM * window.innerHeight/window.innerWidth);
-            }
-            else{
-                gl.viewport(0.0, 0.0, resFac*w,resFac*w);
-                canvas.width = resFac*w;
-                canvas.height = resFac*w;
-            }
-            changeTrue(); 
+            Res=1;
+            setRes();
+        }
+    )
+    resButton2.addEventListener("click",
+        function(){
+            Res=2;
+            setRes();
+        }
+    )
+    resButton3.addEventListener("click",
+        function(){
+            Res=3;
+            setRes();
         }
     )
     window.addEventListener("keydown",
@@ -410,13 +451,24 @@ function createGl(){
                     changeTrue();
                 }
             }
-            console.log(e.key);
             if(e.key === ' ') {
                 animating=!animating;
                 changeTrue();
             }
         }
     );
+    downloadButton.addEventListener("click",
+        function(){
+            //const link = document.createElement('a');
+            //link.download = 'download.png';
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            //link.href = canvas.toDataURL();
+            //link.click();
+            //link.delete;
+            capture = true;
+        }
+    );
+    
     animTime();
     function animTime() {
         if(change){
@@ -449,8 +501,87 @@ function createGl(){
             gl.uniform1f(colorTypeLocation, ColorType.x);
 
             gl.drawArrays(gl.TRIANGLES, 0, 6);
+            pendCanvasDraw();
+        }
+        if (capture===true){
+            capture=false;
+            canvas.toBlob(blob=>{saveBlob(blob, "pretty_colors.png")});
         }
         setTimeout(requestAnimationFrame(animTime), 20);
     }
 }
 
+function Iterat(zi, lengs, masses, gravity, Timestep, friction) {
+    let theta1 = parseFloat(zi.x);
+    let theta2 = parseFloat(zi.y);
+    let w1 = parseFloat(zi.z);
+    let w2 = parseFloat(zi.w);
+    let a = {
+        x:(lengs.y / lengs.x) * (masses.y / (masses.x + masses.y)) * Math.cos(theta1 - theta2),
+        y:(lengs.x / lengs.y) * Math.cos(theta1 - theta2)
+    };
+    let f = {
+        x:-(lengs.y / lengs.x) * (masses.y / (masses.x + masses.y)) * (w2*w2) * Math.sin(theta1 - theta2) - ((gravity / lengs.x) * Math.sin(theta1)),
+        y:(lengs.x / lengs.y) * (w1*w1) * Math.sin(theta1 - theta2) - ((gravity/lengs.y) * Math.sin(theta2))
+    };
+
+    let g1 = (f.x - (a.x * f.y)) / (1 - (a.x * a.y));
+    let g2 = (-(a.y * f.x) + f.y) / (1 - (a.x * a.y));
+    console.log(theta1 - theta2);
+    let endz = {
+        x:zi.x + Timestep * zi.z,
+        y:zi.y + Timestep * zi.w, 
+        z:(1 - friction) * (zi.z + Timestep*g1), 
+        w:(1 - friction) * (zi.w + Timestep*g2)
+    };
+    return endz;
+}
+
+function SimPendulum(zis2, lengs, masses, grav, Timestep, Friction, Time) {
+    let zis=zis2;
+    for (let i=0; i<Time; i++){
+        zis = Iterat(zis, lengs, masses, grav, Timestep, Friction);
+    }
+    return zis;
+}
+let pendctx = pendCanvas.getContext("2d");
+const PI = 3.14159;
+function pendCanvasDraw() {
+    pendctx.fillStyle = "black";
+    pendctx.fillRect(0, 0, pendCanvas.width, pendCanvas.height);
+
+    let pendData = {x:Number(p1StartAngle.x),y:Number(p2StartAngle.x),z:Number(p1StartVel.x),w:Number(p2StartVel.x)};
+    console.log(pendData);
+    pendData = SimPendulum(pendData, Lengs, Masses, Number(g.x), 0.05, Number(Friction.x), Number(T.x));
+    console.log(pendData);
+    let pendScale = pendCanvas.width / 8;
+
+    drawLine(
+        {x:  pendCanvas.width/2, y: pendCanvas.width/2}, 
+        {
+            x: Lengs.x * Math.sin(pendData.x) * pendScale + pendCanvas.width/2, 
+            y: Lengs.x * Math.cos(pendData.x) * pendScale + pendCanvas.width/2
+        },
+        pendctx
+    );
+
+    drawLine(
+        {
+            x: Lengs.x * Math.sin(pendData.x) * pendScale + pendCanvas.width/2, 
+            y: Lengs.x * Math.cos(pendData.x) * pendScale + pendCanvas.width/2
+        },
+        {
+            x: ((Lengs.y * Math.sin(pendData.y) + Lengs.x * Math.sin(pendData.x)) * pendScale + pendCanvas.width/2), 
+            y: ((Lengs.y * Math.cos(pendData.y) + Lengs.x * Math.cos(pendData.x)) * pendScale + pendCanvas.width/2)
+        },
+        pendctx
+    );
+}
+
+function drawLine(p1, p2, ctx) {
+    ctx.beginPath(); 
+    ctx.moveTo(p1.x,p1.y);
+    ctx.lineTo(p2.x,p2.y);
+    ctx.strokeStyle = '#ffffff'
+    ctx.stroke();
+}
