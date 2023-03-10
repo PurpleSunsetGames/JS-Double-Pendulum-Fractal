@@ -93,6 +93,8 @@ let Res = 1;
 
 let pendToggled = false;
 
+let renderPaused = false;
+
 frictionDisplay.innerHTML= "Friction: " + Friction.x;
 
 let gl;
@@ -149,14 +151,14 @@ let Labels = [
     "Friction",
 ];
 
-setOnInput(p1StartAngleSlider, p1StartAngle, p1StartAngleDisplay, "Pendulum 1 Start Angle: ", 1);
-setOnInput(p1LengthSlider, Lengs, p1LengthDisplay, "Pendulum 1 length: ", 2);
-setOnInput(p1MassSlider, Masses, p1MassDisplay, "Pendulum 1 mass: ", 3);
-setOnInput(p1StartVelSlider, p1StartVel, p1StartVelDisplay, "Pendulum 1 Start Vel.: ", 4);
-setOnInput(p2StartAngleSlider, p2StartAngle, p2StartAngleDisplay, "Pendulum 2 Start Angle: ", 5);
-setOnInputY(p2LengthSlider, Lengs, p2LengthDisplay, "Pendulum 2 length: ", 6);
-setOnInputY(p2MassSlider, Masses, p2MassDisplay, "Pendulum 2 mass: ", 7);
-setOnInput(p2StartVelSlider, p2StartVel, p2StartVelDisplay, "Pendulum 2 Start Vel.: ", 8);
+setOnInput(p1StartAngleSlider, p1StartAngle, p1StartAngleDisplay, "Pend. 1 Start Angle: ", 1);
+setOnInput(p1LengthSlider, Lengs, p1LengthDisplay, "Pend. 1 length: ", 2);
+setOnInput(p1MassSlider, Masses, p1MassDisplay, "Pend. 1 mass: ", 3);
+setOnInput(p1StartVelSlider, p1StartVel, p1StartVelDisplay, "Pend. 1 Start Vel.: ", 4);
+setOnInput(p2StartAngleSlider, p2StartAngle, p2StartAngleDisplay, "Pend. 2 Start Angle: ", 5);
+setOnInputY(p2LengthSlider, Lengs, p2LengthDisplay, "Pend. 2 length: ", 6);
+setOnInputY(p2MassSlider, Masses, p2MassDisplay, "Pend. 2 mass: ", 7);
+setOnInput(p2StartVelSlider, p2StartVel, p2StartVelDisplay, "Pend. 2 Start Vel.: ", 8);
 setOnInput(gravitySlider, g, gravityDisplay, "Gravity: ", 9);
 setOnInput(timeSlider, T, timeDisplay, "Time: ", 10);
 setOnInput(frictionSlider, Friction, frictionDisplay, "Friction: ", 11);
@@ -205,11 +207,19 @@ pendToggleButton.addEventListener("click",
         }
         else{
             pendCanvas.style.display = "none";
-            canvas1.style.width = "80%";
+            canvas1.style.width = "70%";
         }
     }
 );
-
+canvas1.addEventListener("dblclick",
+    function(){
+        renderPaused = !renderPaused;
+        if(renderPaused){
+        alert("Fractal Render Paused. Double click the fractal again to unpause. \n"+
+              "Use this feature if the fractal is too slow and you just want to enjoy the pendulum.")
+        }
+    }
+);
 
 let resList = [
     "Low",
@@ -218,8 +228,8 @@ let resList = [
 ]
 let resLevels = [
     .5,
-    1,
-    4
+    2,
+    6
 ]
 let colorMapOptions = [
     "Final Angles (RGB)",
@@ -250,12 +260,12 @@ let draggedXMouse=0,
 
 canvas1.addEventListener("mousemove", (e)=>{
     if(mouseDown){
-        Offsety += (e.movementY/(.5*canvas.clientWidth)) * (Scale);
-        Offsetx -= (e.movementX/(.5*canvas.clientWidth)) * (Scale);
+        Offsety += (e.movementY/(.5*canvas1.clientWidth)) * (Scale);
+        Offsetx -= (e.movementX/(.5*canvas1.clientWidth)) * (Scale);
+        changeTrue();
     }
     draggedXMouse = xMouse;
     draggedYMouse = yMouse;
-    changeTrue()
 })
 
 canvas1.addEventListener('mousedown', 
@@ -412,8 +422,10 @@ function createGl(canvas, visual){
     )
     resButton3.addEventListener("click",
         function(){
-            Res=3;
-            setRes();
+            if(confirm("This will likely crash WebGL, especially if you are in fullscreen mode or if the 'Time' slider is high. Continue?")){
+                Res=3;
+                setRes();
+            }
         }
     )
     window.addEventListener("keydown",
@@ -430,6 +442,7 @@ function createGl(canvas, visual){
                     canvas.width = resFac*(w * window.innerWidth/window.innerHeight);
                     canvas.height = resFac*(wM * window.innerHeight/window.innerWidth);
                     canvas.style.marginTop = "2%";
+                    canvas.style.aspectRatio = "16/9";
                     fullScreened = true;
                     
                     changeTrue();
@@ -445,6 +458,7 @@ function createGl(canvas, visual){
                     gl.viewport(0.0, 0.0, resFac*w,resFac*w);
                     canvas.width = resFac*w;
                     canvas.height = resFac*w;
+                    canvas.style.aspectRatio = "1/1";
                     
                     fullScreened = false;
 
@@ -471,17 +485,17 @@ function createGl(canvas, visual){
     
     animTime();
     function animTime() {
-        if(change){
-            change = false;
-            if(animating){
-                if (T.x > 300){
-                    T.x = 0;
-                }
-                T.x++;
-                changeTrue();
+        if(animating){
+            if (T.x > 300){
+                T.x = 0;
             }
-            timeSlider.value=T.x;
-            timeDisplay.innerHTML = "Time: " + T.x;
+            T.x++;
+            changeTrue();
+        }
+        timeSlider.value=T.x;
+        timeDisplay.innerHTML = "Time: " + T.x;
+        if(change && !renderPaused){
+            change = false;
             gl.uniform1f(timeAttribLocation, T.x);
             gl.uniform2f(offsetAttribLocation, Offsetx, Offsety);
             gl.uniform1f(scaleAttribLocation, Scale);
@@ -501,8 +515,8 @@ function createGl(canvas, visual){
             gl.uniform1f(colorTypeLocation, ColorType.x);
 
             gl.drawArrays(gl.TRIANGLES, 0, 6);
-            pendCanvasDraw();
         }
+        pendCanvasDraw();
         if (capture===true){
             capture=false;
             canvas.toBlob(blob=>{saveBlob(blob, "pretty_colors.png")});
@@ -527,7 +541,6 @@ function Iterat(zi, lengs, masses, gravity, Timestep, friction) {
 
     let g1 = (f.x - (a.x * f.y)) / (1 - (a.x * a.y));
     let g2 = (-(a.y * f.x) + f.y) / (1 - (a.x * a.y));
-    console.log(theta1 - theta2);
     let endz = {
         x:zi.x + Timestep * zi.z,
         y:zi.y + Timestep * zi.w, 
@@ -551,9 +564,7 @@ function pendCanvasDraw() {
     pendctx.fillRect(0, 0, pendCanvas.width, pendCanvas.height);
 
     let pendData = {x:Number(p1StartAngle.x),y:Number(p2StartAngle.x),z:Number(p1StartVel.x),w:Number(p2StartVel.x)};
-    console.log(pendData);
     pendData = SimPendulum(pendData, Lengs, Masses, Number(g.x), 0.05, Number(Friction.x), Number(T.x));
-    console.log(pendData);
     let pendScale = pendCanvas.width / 8;
 
     drawLine(
@@ -576,6 +587,22 @@ function pendCanvasDraw() {
         },
         pendctx
     );
+    drawCircle(
+        {
+            x: Lengs.x * Math.sin(pendData.x) * pendScale + pendCanvas.width/2, 
+            y: Lengs.x * Math.cos(pendData.x) * pendScale + pendCanvas.width/2
+        },
+        4*Math.sqrt(Masses.x/Math.PI),
+        pendctx
+    );
+    drawCircle(
+        {
+            x: ((Lengs.y * Math.sin(pendData.y) + Lengs.x * Math.sin(pendData.x)) * pendScale + pendCanvas.width/2), 
+            y: ((Lengs.y * Math.cos(pendData.y) + Lengs.x * Math.cos(pendData.x)) * pendScale + pendCanvas.width/2)
+        },
+        4*Math.sqrt(Masses.y/Math.PI),
+        pendctx
+    );
 }
 
 function drawLine(p1, p2, ctx) {
@@ -584,4 +611,10 @@ function drawLine(p1, p2, ctx) {
     ctx.lineTo(p2.x,p2.y);
     ctx.strokeStyle = '#ffffff'
     ctx.stroke();
+}
+function drawCircle(p, r, ctx) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, r, 0, 2 * Math.PI);
+    ctx.fillStyle = '#ffefff'
+    ctx.fill();
 }

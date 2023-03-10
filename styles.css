@@ -25,7 +25,7 @@ div {
     margin-top: 5px;
     margin-bottom: 5px;
     margin-left: 5%;
-    margin-right: 8%;
+    margin-right: 5%;
     float: left;
 }
 .pmini{
@@ -97,9 +97,10 @@ div {
     height:100%;
 }
 canvas{
-    width: 78.5%;
-    height:78.5%;
+    width: 70%;
+    aspect-ratio: 1/1;
     max-height:min-content;
+    margin: auto;
 }
 .slider-container{
     float: left;
@@ -109,8 +110,8 @@ canvas{
     border-style:solid;
     border-color: #878790;
     border-width: 1px;
-    border-radius: 3px;
-    margin-bottom: 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
 }
 .slider-container2{
     width: 80%;
@@ -147,6 +148,8 @@ canvas{
 }
 
 .pendCanvas1{
+    aspect-ratio: 1/1;
     width: 0%;
     height: 0%;
+    margin: auto;
 }

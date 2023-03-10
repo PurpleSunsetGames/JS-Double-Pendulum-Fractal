@@ -15,19 +15,20 @@
       <p class="pdescription" id="titleDesc"><em>Representation of the Evolution of All Possible Double Pendulums</em></p>
       <canvas id="canvas" width="200" height="100"></canvas>
       <div class="slider-container2">
-        <div style="width:50%; float:left; margin-right: 0%;">
+        <div style="width:60%; float:left; margin-right: 0%;">
           <p class="pdescription3">Resolution: </p>
           <button id="resButton1" class="button3">Low</button>
           <button id="resButton2" class="button3">High</button>
           <button id="resButton3" class="button3">Very High</button>
         </div>
-        <div style="width:50%; float:right">
+        <div style="width:40%; float:right">
           <button id="pendToggleButton" class="button3">Show Pendulum</button>
           <button id="downloadButton" class="button3">Download</button>
         </div>
-
       </div>
-      <canvas id="pendCanvas" width="200" height="200" class="pendCanvas1"></canvas>
+      <div>
+        <canvas id="pendCanvas" width="200" height="200" class="pendCanvas1"></canvas>
+      </div>
     </div>
     <div class="column2" id="column2">
       <p class="pmini">Settings</p>
@@ -51,36 +52,36 @@
         easter egg :)
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p1StartAngleSlider">
-          <p id="p1StartAngleDisplay" class="pdescription2">Pendulum 1 start angle: 0</p>
+          <p id="p1StartAngleDisplay" class="pdescription2">Pend. 1 start angle: 0</p>
         </div>
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="p1LengthSlider">
-          <p id="p1LengthDisplay" class="pdescription2">Pendulum 1 length: 1</p>
+          <p id="p1LengthDisplay" class="pdescription2">Pend. 1 length: 1</p>
         </div>
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="p1MassSlider">
-          <p id="p1MassDisplay" class="pdescription2">Pendulum 1 mass: 1</p>
+          <p id="p1MassDisplay" class="pdescription2">Pend. 1 mass: 1</p>
         </div>
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p1StartVelSlider">
-          <p id="p1StartVelDisplay" class="pdescription2">Pendulum 1 start vel.: 0</p>
+          <p id="p1StartVelDisplay" class="pdescription2">Pend. 1 start vel.: 0</p>
         </div>
         
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p2StartAngleSlider">
-          <p id="p2StartAngleDisplay" class="pdescription2">Pendulum 2 start angle: 0</p>
+          <p id="p2StartAngleDisplay" class="pdescription2">Pend. 2 start angle: 0</p>
         </div>
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="p2LengthSlider">
-          <p id="p2LengthDisplay" class="pdescription2">Pendulum 2 length: 1</p>
+          <p id="p2LengthDisplay" class="pdescription2">Pend. 2 length: 1</p>
         </div>
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="1" class="slider-square" id="p2MassSlider">
-          <p id="p2MassDisplay" class="pdescription2">Pendulum 2 mass: 1</p>
+          <p id="p2MassDisplay" class="pdescription2">Pend. 2 mass: 1</p>
         </div>
         <div class="slider-container">
           <input type="range" min="0" max="10" step=".01" value="0" class="slider-square" id="p2StartVelSlider">
-          <p id="p2StartVelDisplay" class="pdescription2">Pendulum 2 start vel.: 0</p>
+          <p id="p2StartVelDisplay" class="pdescription2">Pend. 2 start vel.: 0</p>
         </div>
         <div class="slider-container">
           <button id="xAxisToggle" class="button2">X Axis: Pendulum 1 start angle</button>
