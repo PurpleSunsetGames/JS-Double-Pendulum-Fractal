@@ -236,7 +236,9 @@ let colorMapOptions = [
     "Final Angles (Hue and Value)",
     "Final Velocities (RGB)",
     "Final Velocities (Hue and Value)",
-    "Potential Energy (Value)"
+    "Potential Energy (Value)",
+    "Pendulum 1 Has Flipped (Value)",
+    "Time for Pend. 1 to Flip (Hue)"
 ]
 
 colorMapToggle1.addEventListener("click",

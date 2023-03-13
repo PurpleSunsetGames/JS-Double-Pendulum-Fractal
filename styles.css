@@ -7,6 +7,12 @@ div {
     font-size:large;
     margin-top: 5px;
     margin-bottom: 5px;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
 }
 .pdescription2{
     color: rgb(189, 207, 222);
@@ -17,6 +23,12 @@ div {
     margin-bottom: 5px;
     margin-right: 9px;
     float: right;
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none;
 }
 .pdescription3{
     color: rgb(189, 207, 222);
@@ -27,11 +39,23 @@ div {
     margin-left: 5%;
     margin-right: 5%;
     float: left;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 .pmini{
     color: rgb(189, 207, 222);
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size:large;
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none;
 }
 
 .header1{
@@ -39,6 +63,12 @@ div {
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 30px;
     margin-bottom: 0%;
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none;
 }
 .button1{
     background-color:rgb(10, 00, 20);
@@ -52,6 +82,12 @@ div {
     border-color: rgb(171, 177, 183);
     float:left;
     border-style:solid;
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none;
 }
 .button1:hover{
     background-color: #4d5461;
@@ -67,6 +103,12 @@ div {
     border-color: rgb(171, 177, 183);
     float:none;
     border-style:solid;
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none;
 }
 .button2:hover{
     background-color: #4d5461;
@@ -82,6 +124,12 @@ div {
     border-color: rgb(171, 177, 183);
     float:inherit;
     border-style:solid;
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none;
 }
 .button3:hover{
     background-color: #4d5461;
@@ -101,6 +149,12 @@ canvas{
     aspect-ratio: 1/1;
     max-height:min-content;
     margin: auto;
+    -webkit-touch-callout: none; 
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none; 
+        -ms-user-select: none; 
+            user-select: none;
 }
 .slider-container{
     float: left;
